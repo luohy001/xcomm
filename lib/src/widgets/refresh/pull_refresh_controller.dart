@@ -1,10 +1,6 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:xcomm/xcomm.dart';
-import '../status/status.dart';
-import 'paging_mixin.dart';
 
 /// 刷新配置
 class PullRefreshController extends StatelessWidget {

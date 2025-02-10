@@ -10,4 +10,6 @@ class AssetsRes {
   static const String PLUGIN_VERSION = '0.0.1';
   static const String MY = 'assets/flags/my.png';
   static const String SG = 'assets/flags/sg.png';
+  static const String ICO_CHECK = 'assets/svg/ico-check.svg';
+  static const String ICO_WARNING = 'assets/svg/ico-warning.svg';
 }

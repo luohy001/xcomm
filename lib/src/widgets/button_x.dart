@@ -312,7 +312,7 @@ class ButtonX extends StatelessWidget {
                 backgroundColor: backgroundColor,
                 foregroundColor: foregroundColor,
                 padding: innerPadding ??
-                    EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+                    EdgeInsets.symmetric(vertical: 14.r, horizontal: 16.w),
                 minimumSize: minSize,
               ),
           onPressed: onPressed,
@@ -340,7 +340,7 @@ class ButtonX extends StatelessWidget {
                 backgroundColor: backgroundColor,
                 foregroundColor: foregroundColor,
                 padding: innerPadding ??
-                    EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+                    EdgeInsets.symmetric(vertical: 14.r, horizontal: 16.w),
                 minimumSize: minSize,
               ),
           onPressed: onPressed,
