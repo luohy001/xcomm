@@ -8,6 +8,7 @@ class BaseDialogView extends StatelessWidget {
   final Widget child;
   final double? height;
   final String title;
+  final Color backgroundColor;
   final TextStyle? titleStyle;
   final String subTitle;
   final TextStyle? subTitleStyle;
@@ -28,6 +29,7 @@ class BaseDialogView extends StatelessWidget {
     this.closeIconColor,
     this.closeIconSize,
     this.titleAlign = Alignment.topCenter,
+    this.backgroundColor = const Color(0xFFEFEFEF),
   });
 
   @override
@@ -37,7 +39,7 @@ class BaseDialogView extends StatelessWidget {
       child: Container(
         padding: REdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: backgroundColor,
           borderRadius: BorderRadius.only(
             topRight: Radius.circular(20.r),
             topLeft: Radius.circular(20.r),

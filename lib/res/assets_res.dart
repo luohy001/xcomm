@@ -6,8 +6,8 @@
 class AssetsRes {
   AssetsRes._();
 
-  static const String PLUGIN_NAME = 'xcomm';
-  static const String PLUGIN_VERSION = '0.0.1';
+  static const String PROJECT_NAME = 'xcomm';
+  static const String PROJECT_VERSION = '0.0.1';
   static const String MY = 'assets/flags/my.png';
   static const String SG = 'assets/flags/sg.png';
   static const String ICO_CHECK = 'assets/svg/ico-check.svg';

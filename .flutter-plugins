@@ -1,5 +1,5 @@
 # This is a generated file; do not edit or check into version control.
-connectivity_plus=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/connectivity_plus-6.1.3/
+connectivity_plus=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/connectivity_plus-6.1.4/
 device_info_plus=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/device_info_plus-11.3.0/
 flutter_image_compress=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress-2.4.0/
 flutter_image_compress_common=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress_common-1.0.6/
@@ -11,7 +11,7 @@ path_provider_android=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_prov
 path_provider_foundation=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider_foundation-2.4.1/
 path_provider_linux=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider_linux-2.2.1/
 path_provider_windows=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider_windows-2.3.0/
-shared_preferences=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-2.5.1/
+shared_preferences=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences-2.5.3/
 shared_preferences_android=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences_android-2.4.4/
 shared_preferences_foundation=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences_foundation-2.5.4/
 shared_preferences_linux=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/shared_preferences_linux-2.4.1/
