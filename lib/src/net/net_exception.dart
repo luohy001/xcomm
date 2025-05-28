@@ -34,27 +34,26 @@ class NetException {
           int errCode = error.response?.statusCode ?? -1;
           switch (errCode) {
             case 400:
-              return NetError(errCode.toString(), "Request syntax error");
+              return NetError('CS1400', "Request syntax error");
             case 401:
-              return NetError(errCode.toString(), 'invalid token');
+              return NetError('CS1401', 'invalid token');
             case 403:
-              return NetError(errCode.toString(), "Server refused execution");
+              return NetError('CS1403', "Server refused execution");
             case 404:
-              return NetError(
-                  errCode.toString(), "Unable to connect to server");
+              return NetError('CS1403', "Unable to connect to server");
             case 405:
-              return NetError(errCode.toString(), "Request method is disabled");
-            case 500:
-              return NetError(errCode.toString(), "Server internal error");
-            case 502:
-              return NetError(errCode.toString(), "Invalid request");
-            case 503:
-              return NetError(errCode.toString(), "The server is down.");
-            case 505:
               return NetError(
-                  errCode.toString(), "http requests are not supported");
+                  'CS1404'.toString(), "Request method is disabled");
+            case 500:
+              return NetError('CS1500', "Server internal error");
+            case 502:
+              return NetError('CS1502', "Invalid request");
+            case 503:
+              return NetError('CS1503'.toString(), "The server is down.");
+            case 505:
+              return NetError('CS1505', "http requests are not supported");
             default:
-              return NetError(errCode.toString(),
+              return NetError('CS1$errCode',
                   error.response?.statusMessage ?? 'unknown error');
           }
         } catch (e) {

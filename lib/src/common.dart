@@ -3,7 +3,6 @@ import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'event/refresh_ui.dart';
 import 'services/global.dart';
@@ -58,9 +57,6 @@ sendEvent<T>(T event) {
 void refreshAppUi() {
   sendEvent(const RefreshUiEvent());
 }
-
-/// 返回sharedPreferences
-SharedPreferences get sharedPreferences => GlobalService.to.sharedPreferences;
 
 /// 切换主题模式
 void changeThemeMode(ThemeMode themeMode) {

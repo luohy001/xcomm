@@ -1,11 +1,5 @@
 # This is a generated file; do not edit or check into version control.
-connectivity_plus=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/connectivity_plus-6.1.4/
 device_info_plus=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/device_info_plus-11.3.0/
-flutter_image_compress=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress-2.4.0/
-flutter_image_compress_common=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress_common-1.0.6/
-flutter_image_compress_macos=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress_macos-1.0.3/
-flutter_image_compress_ohos=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress_ohos-0.0.3/
-flutter_image_compress_web=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/flutter_image_compress_web-0.1.5/
 path_provider=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider-2.1.5/
 path_provider_android=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider_android-2.2.15/
 path_provider_foundation=/Users/hyluo/.pub-cache/hosted/pub.flutter-io.cn/path_provider_foundation-2.4.1/

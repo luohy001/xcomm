@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xcomm/xcomm.dart';
 
 /// 语言改变的回调
@@ -12,7 +11,6 @@ typedef LocaleChangeCallback = Function(Locale locale);
 class GlobalService extends GetxService with WidgetsBindingObserver {
   static GlobalService get to => Get.find();
   late EventBus eventBus;
-  late SharedPreferences sharedPreferences;
   BaseDeviceInfo? _baseDeviceInfo;
 
   static const String themeCodeKey = 'themeCodeKey';
@@ -33,7 +31,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
   }) async {
     WidgetsBinding.instance.addObserver(this);
     eventBus = EventBus();
-    sharedPreferences = await SharedPreferences.getInstance();
+    await SpUtil.getInstance();
     this.localeChangeCallback = localeChangeCallback;
     //初始化本地语言配置
     _initLocale(supportedLocales);
@@ -61,7 +59,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
 
   /// 初始 theme
   void _initTheme() {
-    var themeCode = sharedPreferences.getString(themeCodeKey) ?? 'system';
+    var themeCode = SpUtil.getString(themeCodeKey) ?? 'system';
     switch (themeCode) {
       case 'system':
         _themeMode = ThemeMode.system;
@@ -80,9 +78,9 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
     _themeMode = themeMode;
     Get.changeThemeMode(_themeMode);
     if (_themeMode == ThemeMode.system) {
-      await setValue(themeCodeKey, 'system');
+      await SpUtil.putString(themeCodeKey, 'system');
     } else {
-      await setValue(
+      await SpUtil.putString(
           themeCodeKey, themeMode == ThemeMode.dark ? 'dark' : 'light');
     }
     updateNavigationBar();
@@ -133,7 +131,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
     if (supportedLocales == null) {
       return;
     }
-    var langCode = sharedPreferences.getString(languageCodeKey) ?? '';
+    var langCode = SpUtil.getString(languageCodeKey) ?? '';
     if (langCode.isEmpty) {
       return;
     }
@@ -151,7 +149,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
   Future<void> changeLocale(Locale value) async {
     locale = value;
     localeChangeCallback?.call(locale);
-    await setValue(languageCodeKey, value.languageCode);
+    await SpUtil.putString(languageCodeKey, value.languageCode);
     Get.updateLocale(value);
     refreshAppUi();
   }
