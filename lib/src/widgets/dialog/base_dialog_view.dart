@@ -6,8 +6,10 @@ import '../no_water_ripples_are_displayed.dart';
 
 class BaseDialogView extends StatelessWidget {
   final Widget child;
+  final double? width;
   final double? height;
   final String title;
+  final String position;
   final Color backgroundColor;
   final TextStyle? titleStyle;
   final String subTitle;
@@ -21,6 +23,7 @@ class BaseDialogView extends StatelessWidget {
     super.key,
     required this.child,
     this.height,
+    this.width,
     this.bottomWidget,
     this.title = '',
     this.subTitle = '',
@@ -28,22 +31,35 @@ class BaseDialogView extends StatelessWidget {
     this.subTitleStyle,
     this.closeIconColor,
     this.closeIconSize,
+    this.position = 'bottom',
     this.titleAlign = Alignment.topCenter,
     this.backgroundColor = const Color(0xFFEFEFEF),
   });
 
   @override
   Widget build(BuildContext context) {
+    var borderRadius = BorderRadius.only(
+      topRight: Radius.circular(20.r),
+      topLeft: Radius.circular(20.r),
+    );
+    if (position == 'center') {
+      borderRadius = BorderRadius.all(
+        Radius.circular(20.r),
+      );
+    } else if (position == 'top') {
+      borderRadius = BorderRadius.only(
+        bottomLeft: Radius.circular(20.r),
+        bottomRight: Radius.circular(20.r),
+      );
+    }
     return ConstrainedBox(
-      constraints: BoxConstraints(maxHeight: height ?? 0.6.sh),
+      constraints:
+          BoxConstraints(maxHeight: height ?? 0.6.sh, maxWidth: width ?? 1.sw),
       child: Container(
         padding: REdgeInsets.symmetric(vertical: 20),
         decoration: BoxDecoration(
           color: backgroundColor,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(20.r),
-            topLeft: Radius.circular(20.r),
-          ),
+          borderRadius: borderRadius,
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.25),

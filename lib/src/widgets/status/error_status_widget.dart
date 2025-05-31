@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 
-class ErrorWidget extends StatelessWidget {
+class ErrorStatusWidget extends StatelessWidget {
   final Function()? onRefresh;
   final String? errorMsg;
   final TextStyle? errorStyle;
+  final Widget? icon;
 
-  const ErrorWidget({
+  const ErrorStatusWidget({
     this.errorMsg,
     this.errorStyle,
     this.onRefresh,
+    this.icon,
     super.key,
   });
 
@@ -24,11 +26,13 @@ class ErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Lottie.asset(
-              'assets/lottie/error.json',
-              width: 0.6.sw,
-              height: 0.6.sw,
-            ),
+            icon ??
+                Lottie.asset(
+                  'assets/lottie/error.json',
+                  width: 0.6.sw,
+                  height: 0.6.sw,
+                  package: 'xcomm',
+                ),
             SizedBox(height: 5.r),
             Text(
               errorMsg ?? 'system error',

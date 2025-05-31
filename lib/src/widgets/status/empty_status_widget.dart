@@ -4,13 +4,15 @@ import 'package:lottie/lottie.dart';
 
 import '../text_x.dart';
 
-class EmptyWidget extends StatelessWidget {
+class EmptyStatusWidget extends StatelessWidget {
   final Function()? onRefresh;
   final String? emptyMessage;
+  final Widget? icon;
 
-  const EmptyWidget({
+  const EmptyStatusWidget({
     this.onRefresh,
     this.emptyMessage,
+    this.icon,
     super.key,
   });
 
@@ -26,11 +28,13 @@ class EmptyWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Lottie.asset(
-                'assets/lottie/error.json',
-                width: 0.6.sw,
-                height: 0.6.sw,
-              ),
+              icon ??
+                  Lottie.asset(
+                    'assets/lottie/empty.json',
+                    width: 0.6.sw,
+                    height: 0.6.sw,
+                    package: 'xcomm',
+                  ),
               TextX.labelMedium(emptyMessage ?? 'No data, click retry'),
             ],
           ),

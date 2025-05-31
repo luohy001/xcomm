@@ -12,5 +12,4 @@ export 'button_x.dart';
 export 'icon_x.dart';
 export 'image_x.dart';
 export 'titled_dropdown/titled_dropdown.dart';
-export 'phone_field/phone_field.dart';
 export 'dialog/dialog.dart';

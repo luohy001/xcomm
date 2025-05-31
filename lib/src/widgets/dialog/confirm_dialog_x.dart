@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
-import 'package:xcomm/res/assets_res.dart';
 import 'package:xcomm/src/resources/resources.dart';
 import 'package:xcomm/src/widgets/button_x.dart';
 import 'package:xcomm/src/widgets/icon_x.dart';
@@ -121,9 +120,9 @@ class ConfirmDialogX extends StatelessWidget {
     } else {
       var iconName = '';
       if (iconType == ConfirmDialogXIconType.error) {
-        iconName = AssetsRes.ICO_WARNING;
+        iconName = 'assets/svg/ico-warning.svg';
       } else if (iconType == ConfirmDialogXIconType.success) {
-        iconName = AssetsRes.ICO_CHECK;
+        iconName = 'assets/svg/ico-check.svg';
       }
       if (iconName.isEmpty) {
         widget = SizedBox.shrink();

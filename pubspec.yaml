@@ -37,8 +37,10 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assets/flags/
-    - assets/svg/
+    - assets/svg/ico-check.svg
+    - assets/svg/ico-warning.svg
+    - assets/lottie/empty.json
+    - assets/lottie/error.json
 # To add assets to your package, add an assets section, like this:
 # assets:
 #   - images/a_dot_burr.jpeg

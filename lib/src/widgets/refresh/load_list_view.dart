@@ -1,233 +1,393 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
+import '../status/empty_status_widget.dart';
+import '../status/loading_status_widget.dart';
 
-typedef ListItemBuilder<T> = Widget Function(
-    BuildContext context, int count, int index, T data);
-typedef OnRefreshData<T> = Future<T> Function(int pageNum, int pageSize);
-typedef OnLoadData<T> = Future<T> Function(int pageNum, int pageSize);
-typedef OnDataUpdate<T> = void Function(T datas);
+/// 使用示例:
+// class SchemeListPage extends StatefulWidget {
+//
+//   const SchemeListPage({
+//     super.key,
+//     this.arguments,
+//   });
+//
+//   final Map<String, dynamic>? arguments;
+//
+//   @override
+//   State<SchemeListPage> createState() => _SchemeListPageState();
+// }
+//
+// class _SchemeListPageState extends State<SchemeListPage> {
+//
+//   /// 获取上个页面传的参数
+//   /// userId --- 用户id
+//   late Map<String, dynamic> arguments = widget.arguments ?? Get.arguments;
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text("$widget"),
+//         actions: ['done',].map((e) => TextButton(
+//           child: Text(e,
+//             style: TextStyle(color: Colors.white),
+//           ),
+//           onPressed: () => debugPrint(e),)
+//         ).toList(),
+//       ),
+//       body: buildBody(),
+//     );
+//   }
+//
+//   buildBody() {
+//     return LoadListView<DepartmentPageDetailModel>(
+//       pageSize: 2,
+//       onRequest: (bool isRefresh, int page, int pageSize, last) async {
+//
+//         return await requestList(pageNo: page, pageSize: pageSize);
+//       },
+//       itemBuilder: (BuildContext context, int index, e, onRefresh) {
+//
+//         return InkWell(
+//           onTap: () {
+//             YLog.d("${e.toJson()}");
+//           },
+//           child: PatientSchemeCell(
+//             model: e,
+//             index: index,
+//           ),
+//         );
+//       },
+//     );
+//   }
+//
+//   /// 列表数据请求
+//   Future<List<DepartmentPageDetailModel>> requestList({
+//     required int pageNo,
+//     int pageSize = 20,
+//   }) async {
+//     var api = SchemePageApi(
+//       ownerId: arguments['userId'] ?? '',
+//       pageNo: pageNo,
+//       pageSize: pageSize,
+//     );
+//
+//     Map<String, dynamic>? response = await api.startRequest();
+//     if (response['code'] != 'OK') {
+//       return [];
+//     }
+//
+//     final rootModel = DepartmentPageRootModel.fromJson(response ?? {});
+//     var list = rootModel.result?.content ?? [];
+//     return list;
+//   }
+// }
+
+typedef ValueIndexedWidgetBuilder<T> = Widget Function(
+    BuildContext context, int index, T data);
+
+/// 请求列表回调
+typedef RequestListCallback<T> = Future<List<T>> Function(
+  bool isRefresh,
+  int pageNo,
+  int pageSize,
+  T? last,
+);
 
 class LoadListView<T> extends StatefulWidget {
-  final int pageSize;
-  final Widget? emptyWidget;
-  final bool refreshOnStart;
-  final bool canDropDown;
-  final bool canPullUp;
-  final OnRefreshData<List<T>?> onRefreshData;
-  final OnLoadData<List<T>?> onLoadData;
-  final ListItemBuilder<T> itemBuilder;
-  final OnDataUpdate<List<T>>? onDataUpdate;
-  final LoadListViewController? controller;
-
-  /// [pageSize] 每页加载条目数，页数 pageNum 由 _LoadListViewState 维护
-  /// [emptyWidget] 数据为空时的占位视图，靠上居中
-  /// [refreshOnStart] 首次自动刷新
-  /// [canDropDown] 是否可以下拉（刷新），默认true
-  /// [canPullUp] 是否可以上拉（加载），默认true
-  /// [itemBuilder] item视图构造器
-  /// [onRefreshData] 下拉刷新数据，由使用者维护传入
-  /// [onLoadData] 上拉加载更多数据，由使用者维护传入
-  /// [onDataUpdate] 数据更新回调
   const LoadListView({
     super.key,
-    this.pageSize = 20,
-    this.emptyWidget,
-    this.refreshOnStart = false,
-    this.canDropDown = true,
-    this.canPullUp = true,
-    required this.onRefreshData,
-    required this.onLoadData,
-    required this.itemBuilder,
-    this.onDataUpdate,
+    this.listViewKey,
     this.controller,
+    this.child,
+    this.placeholder,
+    required this.onRequest,
+    this.pageSize = 20,
+    this.pageNoInitial = 1,
+    this.disableOnReresh = false,
+    this.disableOnLoad = false,
+    this.needRemovePadding = false,
+    required this.itemBuilder,
+    this.headerBuilder,
+    this.footerBuilder,
+    this.separatorBuilder,
+    this.cachedChild,
+    this.refreshController,
+    this.tag,
   });
 
+  /// 列表 key
+  final Key? listViewKey;
+
+  /// 控制器
+  final LoadListViewController<T>? controller;
+
+  /// 子视图(为空 默认 带刷新组件的 ListView)
+  final Widget? child;
+
+  /// 刷新页面不变的部分,
+  final Widget? cachedChild;
+
+  final Widget? placeholder;
+
+  /// 每页数量
+  final int pageSize;
+
+  /// 页面初始索引
+  final int pageNoInitial;
+
+  /// 禁用下拉刷新
+  final bool disableOnReresh;
+
+  /// 禁用上拉加载
+  final bool disableOnLoad;
+
+  /// 使用使用 MediaQuery.removePadding
+  final bool needRemovePadding;
+
+  /// 请求方法
+  final RequestListCallback<T> onRequest;
+
+  /// ListView 的 itemBuilder
+  final ValueIndexedWidgetBuilder<T> itemBuilder;
+
+  /// ListView 的 separatorBuilder
+  final IndexedWidgetBuilder? separatorBuilder;
+
+  /// 列表表头
+  final Widget Function(int count)? headerBuilder;
+
+  /// 列表表尾
+  final Widget Function(int count)? footerBuilder;
+
+  /// 刷新控制器
+  final EasyRefreshController? refreshController;
+
+  final String? tag;
+
   @override
-  State<LoadListView<T>> createState() => _LoadListViewState<T>();
+  LoadListViewState<T> createState() => LoadListViewState<T>();
 }
 
-class _LoadListViewState<T> extends State<LoadListView<T>> {
-  bool hasRefresh = false;
-  List<T> dataList = [];
-  int pageNum = 0;
-  bool noMore = false;
-  final EasyRefreshController refreshController = EasyRefreshController(
-    controlFinishRefresh: true,
-    controlFinishLoad: true,
-  );
-  final ScrollController scrollController = ScrollController();
+class LoadListViewState<T> extends State<LoadListView<T>>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  late final _easyRefreshController = widget.refreshController ??
+      EasyRefreshController(
+        controlFinishRefresh: true,
+        controlFinishLoad: true,
+      );
+
+  final _scrollController = ScrollController();
+
+  var indicator = IndicatorResult.none;
+
+  late var pageNo = widget.pageNoInitial;
+
+  late final items = ValueNotifier(<T>[]);
+
+  /// 首次加载
+  var isFirstLoad = true;
 
   @override
-  void setState(VoidCallback fn) {
-    if (!mounted) return;
-    super.setState(fn);
+  void dispose() {
+    widget.controller?.detach(this);
+    super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    widget.controller?._setOnListener(
-      getTotalCount: () => dataList.length,
-      callRefresh: (bool silent) {
-        if (silent) {
-          refreshDataSilently();
-        } else {
-          refreshData();
-        }
-      },
-      removeItem: (index) {
-        if (dataList.length < (index + 1)) {
-          debugPrint('删除item失败，数组越界');
-          return;
-        }
-        dataList.removeAt(index);
-        widget.onDataUpdate?.call(dataList);
-        setState(() {});
-      },
-    );
-    if (widget.refreshOnStart) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        refreshDataSilently();
-      });
-    }
+    widget.controller?.attach(this);
+    initData();
   }
 
   @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
+  void didUpdateWidget(covariant LoadListView<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller != oldWidget.controller ||
+        widget.placeholder != oldWidget.placeholder ||
+        widget.onRequest != oldWidget.onRequest ||
+        widget.itemBuilder != oldWidget.itemBuilder ||
+        widget.separatorBuilder != oldWidget.separatorBuilder ||
+        widget.cachedChild != oldWidget.cachedChild ||
+        widget.tag != widget.tag) {
+      widget.controller?.attach(this);
+      onRefresh();
+    }
+  }
+
+  Future<void> initData() async {
+    await onRefresh();
+    isFirstLoad = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return EasyRefresh(
-      callRefreshOverOffset: 5,
-      controller: refreshController,
-      refreshOnStart: widget.refreshOnStart,
-      header: const MaterialHeader(),
-      footer: const ClassicFooter(
-        triggerOffset: 40,
-        showMessage: false,
-        iconDimension: 0,
-        iconTheme: IconThemeData(size: 0),
-        spacing: 0,
-        processingText: 'loading',
-        noMoreText: 'No more',
-        textStyle: TextStyle(color: Colors.grey, fontSize: 12),
-      ),
-      onRefresh: widget.canDropDown ? refreshDataSilently : null,
-      onLoad: widget.canPullUp ? loadData : null,
-      child: (dataList.isEmpty && hasRefresh && (widget.emptyWidget != null))
-          ? SizedBox(
-              height: double.maxFinite,
-              child: widget.emptyWidget!,
-            )
-          : ListView.builder(
-              controller: scrollController,
-              itemCount: dataList.length,
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-              itemBuilder: (BuildContext context, int index) {
-                return widget.itemBuilder(
-                  context,
-                  dataList.length,
-                  index,
-                  dataList[index],
-                );
-              },
-            ),
+    super.build(context);
+    if (isFirstLoad) {
+      return const LoadingStatusWidget();
+    }
+
+    return buildBody();
+  }
+
+  Widget buildBody() {
+    return ValueListenableBuilder<List<T>>(
+      valueListenable: items,
+      builder: (context, list, child) {
+        if (list.isEmpty) {
+          return widget.placeholder ?? EmptyStatusWidget(onRefresh: onRefresh);
+        }
+
+        return buildRefresh(
+          child: widget.child ??
+              buildListView(
+                controller: _scrollController,
+                needRemovePadding: widget.needRemovePadding,
+                items: list,
+              ),
+        );
+      },
     );
   }
 
-  /// 刷新数据：展示下拉header
-  Future<void> refreshData() async {
-    refreshController.callRefresh();
+  Widget buildRefresh({
+    Widget? child,
+  }) {
+    return EasyRefresh(
+      controller: _easyRefreshController,
+      triggerAxis: Axis.vertical,
+      onRefresh: widget.disableOnReresh ? null : () => onRefresh(),
+      onLoad: widget.disableOnLoad || indicator == IndicatorResult.noMore
+          ? null
+          : () => onLoad(),
+      child: child,
+    );
   }
 
-  /// 静默刷新数据：不展示下拉header，直接刷新数据
-  Future<void> refreshDataSilently() async {
-    // 每次刷新就重置数据，然后加载第一页
-    pageNum = 1;
-    noMore = false;
-    List<T> list = (await widget.onRefreshData(pageNum, widget.pageSize)) ?? [];
-    if (!mounted) return;
-    if (list.isEmpty) {
-      pageNum = 0;
-    }
-    setState(() {
-      hasRefresh = true;
-      dataList = list;
-      widget.onDataUpdate?.call(dataList);
-    });
-    // 下拉刷新加载的数据如果为空或者小于每页条目数，说明没有更多数据
-    noMore = (list.length < widget.pageSize);
-    refreshController.finishRefresh(IndicatorResult.success);
-
-    /// 跳转到顶部：
-    /// 用于解决下拉刷新数据为空时，采用[widget.emptyWidget]后，EasyRefresh下拉没有反应的问题
-    if (list.isEmpty && (widget.emptyWidget != null)) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (!mounted) return;
-        if (scrollController.hasClients) {
-          scrollController.jumpTo(0.00001);
-        }
-      });
-    }
+  onRefresh() async {
+    pageNo = widget.pageNoInitial;
+    items.value = await widget.onRequest(true, pageNo, widget.pageSize, null);
+    indicator = items.value.length < widget.pageSize
+        ? IndicatorResult.noMore
+        : IndicatorResult.success;
+    _easyRefreshController.finishRefresh(IndicatorResult.success);
   }
 
-  /// 下拉加载更多数据
-  Future<void> loadData() async {
-    if (noMore) {
-      refreshController.finishLoad(IndicatorResult.noMore);
-      debugPrint('+++ LoadListView 没有更多 +++');
+  onLoad() async {
+    if (!mounted) {
       return;
     }
-    pageNum += 1;
-    List<T> list = (await widget.onLoadData(pageNum, widget.pageSize)) ?? [];
-    if (!mounted) return;
-    if (list.isEmpty) {
-      pageNum -= 1;
-    } else {
-      setState(() {
-        dataList.addAll(list);
-        widget.onDataUpdate?.call(dataList);
-      });
+    if (indicator == IndicatorResult.noMore) {
+      return;
     }
-    // 最后一次加载的数据如果为空或者小于每页条目数，说明没有更多数据
-    noMore = (list.length < widget.pageSize);
-    refreshController
-        .finishLoad(noMore ? IndicatorResult.noMore : IndicatorResult.none);
+
+    pageNo += 1;
+
+    final models = await widget.onRequest(false, pageNo, widget.pageSize,
+        items.value.isNotEmpty ? items.value.last : null);
+    items.value = [...items.value, ...models];
+
+    indicator = models.length < widget.pageSize
+        ? IndicatorResult.noMore
+        : IndicatorResult.success;
+    _easyRefreshController.finishLoad(indicator);
+  }
+
+  Widget buildListView({
+    ScrollController? controller,
+    bool needRemovePadding = false,
+    required List<T> items,
+  }) {
+    final itemCount = items.length + 2;
+
+    Widget child = Scrollbar(
+      controller: controller,
+      child: ListView.separated(
+        key: widget.listViewKey,
+        controller: controller,
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return widget.headerBuilder?.call(items.length) ?? const SizedBox();
+          }
+
+          if (index == itemCount - 1) {
+            return widget.footerBuilder?.call(items.length) ?? const SizedBox();
+          }
+
+          final i = index - 1;
+          return widget.itemBuilder(context, i, items[i]);
+        },
+        separatorBuilder: widget.separatorBuilder ??
+            (context, index) {
+              return const Divider(color: Color(0xffe4e4e4), height: 0.5);
+            },
+      ),
+    );
+    if (needRemovePadding) {
+      child = MediaQuery.removePadding(
+        removeTop: true,
+        removeBottom: true,
+        context: context,
+        child: child,
+      );
+    }
+    return child;
   }
 }
 
-class LoadListViewController {
-  void _setOnListener({
-    required Function? getTotalCount,
-    required Function(bool silent)? callRefresh,
-    required void Function(int index)? removeItem,
-  }) {
-    _getItemCount = getTotalCount;
-    _callRefresh = callRefresh;
-    _removeItem = removeItem;
+/// NRefreshListView 组件控制器,将 NRefreshListViewState 的私有属性或者方法暴漏出去
+class LoadListViewController<E> {
+  LoadListViewState<E>? _anchor;
+
+  void attach(LoadListViewState<E> anchor) {
+    _anchor = anchor;
   }
 
-  Function? _getItemCount;
-
-  /// 获取当前数据总数
-  int get itemCount {
-    return _getItemCount?.call() ?? 0;
+  void detach(LoadListViewState<E> anchor) {
+    if (_anchor == anchor) {
+      _anchor = null;
+    }
   }
 
-  Function(bool silent)? _callRefresh;
-
-  /// 触发下拉刷新
-  /// [silent] 是否静默刷新，不展示转圈圈，默认展示转圈圈
-  void callRefresh({bool silent = false}) {
-    _callRefresh?.call(silent);
+  List<E> get items {
+    assert(_anchor != null);
+    return _anchor!.items.value;
   }
 
-  void Function(int index)? _removeItem;
+  void onRefresh() {
+    assert(_anchor != null);
+    _anchor!.onRefresh();
+  }
 
-  void removeItem(int index) {
-    _removeItem?.call(index);
+  /// 更新列表
+  ///
+  /// - test 过滤条件
+  void onUpdate(bool Function(E element)? test) {
+    assert(_anchor != null);
+    if (test != null) {
+      _anchor!.items.value = _anchor!.items.value.where(test).toList();
+      return;
+    }
+    _anchor!.items.value = [..._anchor!.items.value];
+  }
+
+  /// 页码减一
+  void turnPrePage() {
+    assert(_anchor != null);
+    _anchor!.pageNo--;
+  }
+
+  /// 页码加一
+  void turnNextPage() {
+    assert(_anchor != null);
+    _anchor!.pageNo++;
   }
 }

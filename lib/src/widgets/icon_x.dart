@@ -11,7 +11,7 @@ enum IconType {
 /// 图标组件
 class IconX extends StatelessWidget {
   // 默认的图标尺寸
-  static final double _defaultSize = 30.sp;
+  static final double _defaultSize = 20.r;
 
   // 图标类型
   final IconType type;
