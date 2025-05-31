@@ -59,7 +59,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
 
   /// 初始 theme
   void _initTheme() {
-    var themeCode = SpUtil.getString(themeCodeKey) ?? 'system';
+    var themeCode = SpUtil.getString(themeCodeKey, defValue: 'system');
     switch (themeCode) {
       case 'system':
         _themeMode = ThemeMode.system;
@@ -131,7 +131,7 @@ class GlobalService extends GetxService with WidgetsBindingObserver {
     if (supportedLocales == null) {
       return;
     }
-    var langCode = SpUtil.getString(languageCodeKey) ?? '';
+    var langCode = SpUtil.getString(languageCodeKey);
     if (langCode.isEmpty) {
       return;
     }
