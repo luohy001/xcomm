@@ -9,6 +9,7 @@ export 'package:flutter_svg/svg.dart';
 export 'package:flutter_spinkit/flutter_spinkit.dart';
 export 'package:dio/dio.dart';
 export 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+export 'package:path_provider/path_provider.dart';
 
 export 'package:extended_image/extended_image.dart'
     hide MultipartFile, DoubleExtension;
@@ -23,3 +24,4 @@ export 'src/services/services.dart';
 export 'src/utils/utils.dart';
 export 'src/widgets/widgets.dart';
 export 'src/extensions/extensions.dart';
+export 'src/controller/index.dart';

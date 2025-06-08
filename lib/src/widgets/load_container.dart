@@ -104,76 +104,15 @@ class _LoadingContainerState extends State<LoadContainer>
     super.dispose();
   }
 
-  Widget _buildLoadingWidget() {
-    return Center(
-      child: SpinKitRipple(
-        color: ThemeColor.primaryContainer,
-        size: 60.sp,
-      ),
-    );
-  }
-
-  Widget _buildErrorWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Lottie.asset(
-          'assets/lottie/error.json',
-          width: 0.6.sw,
-          height: 0.6.sw,
-        ),
-        TextX.labelMedium(widget.emptyMessage ?? '网络错误,点击重试'),
-      ],
-    );
-  }
-
-  Widget _buildEmptyWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Lottie.asset(
-          'assets/lottie/error.json',
-          width: 0.6.sw,
-          height: 0.6.sw,
-        ),
-        TextX.labelMedium(widget.emptyMessage ?? '暂无数据,点击重试'),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget? ws;
     switch (widget.controller.status) {
       case LoadStatus.error:
-        ws = GestureDetector(
-          onTap: () {
-            if (widget.onReLoad != null) {
-              widget.onReLoad!();
-            }
-          },
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: widget.errorWidget ?? _buildErrorWidget(),
-          ),
-        );
+        ws = ErrorStatusWidget();
         break;
       case LoadStatus.empty:
-        ws = GestureDetector(
-          onTap: () {
-            if (widget.onReLoad != null) {
-              widget.onReLoad!();
-            }
-          },
-          child: SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: widget.emptyWidget ?? _buildEmptyWidget(),
-          ),
-        );
+        ws = EmptyStatusWidget();
         break;
       case LoadStatus.complete:
         ws = widget.child;
@@ -189,7 +128,7 @@ class _LoadingContainerState extends State<LoadContainer>
         ),
       FadeTransition(
         opacity: _loadingAnimation,
-        child: _buildLoadingWidget(),
+        child: LoadingStatusWidget(),
       ),
     ]);
   }
